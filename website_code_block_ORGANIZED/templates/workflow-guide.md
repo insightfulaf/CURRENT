@@ -3,7 +3,7 @@
 ## 📁 Organized File Structure
 
 ```
-website_code_blocks_ORGANIZED/
+website_code_block_ORGANIZED/
 ├── 📁 headers/
 │   ├── head-snippet-v7-production.html    # Ready-to-use header (current content)
 │   └── head-snippet-template.html         # Template with {{PLACEHOLDERS}}
@@ -19,8 +19,8 @@ website_code_blocks_ORGANIZED/
 │   ├── order-bump.html                     # Order bump section
 │   └── faq-section.html                    # FAQ accordion
 ├── 📁 assets/
-│   ├── brand-ui.css                        # Your brand stylesheet
-│   └── site.webmanifest.json              # PWA manifest
+│   ├── ngcai.css                           # Canonical brand stylesheet
+│   └── site.webmanifest                    # PWA manifest
 └── 📁 templates/
     └── workflow-guide.md                   # This file
 ```

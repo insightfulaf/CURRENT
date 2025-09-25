@@ -1,3 +1,8 @@
+### Head Snippet v7 (Production)
+**Where to paste in Systeme.io:** Funnel page → Settings → Edit Header
+
+```html
+<!-- BEGIN paste-ready -->
 <!-- ====================================================================
      Ultimate Head Snippet v7.0 | For InsightfulAffiliate & NextGenCopyAI
      Usage: Paste into systeme.io page settings → Edit Header → Paste here
@@ -115,3 +120,8 @@
     ]
   }
 </script>
+
+<!-- END paste-ready -->
+```
+
+**Notes:** Uses canonical relative paths for `ngcai.css` and `site.webmanifest`. Update icon URLs before publishing.

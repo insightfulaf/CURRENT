@@ -1,3 +1,5 @@
+> **Canonical files:** Use `website_code_block_ORGANIZED/assets/ngcai.css` for styles and `website_code_block_ORGANIZED/site.webmanifest` for your manifest when uploading new assets to Systeme.io.
+
 *CSS / WEBMANIFEST*  
 *Brand-ui.css:*  
 	[https://d1yei2z3i6k35z.cloudfront.net/13254463/68b75bff8673d\_brand-ui.css](https://d1yei2z3i6k35z.cloudfront.net/13254463/68b75bff8673d_brand-ui.css)  
@@ -124,4 +126,3 @@
 5. Default theme is already dark in the hero/thank-you blocks. If you build other pages, add class="theme-dark" to \<body\>.
 
 Tip: You don’t need `/icons/` folders in Systeme. Just use the **public URLs** from Media—those replace the placeholder paths cleanly.
-
