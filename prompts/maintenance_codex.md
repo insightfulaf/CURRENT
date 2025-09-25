@@ -1,70 +1,78 @@
 # InsightfulAffiliate_NextGenCopyAI — Maintenance Agent (Codex)
 
-## Goals (do all of these)
-1) Repository hygiene: detect moved/renamed files and fix intra-repo paths for images, CSS files, and manifest references.
-2) Validate & normalize website code blocks for **Systeme.io** (HTML/CSS/JS snippets must be copy-paste ready).
-3) Reconcile duplicates: there may be 2 CSS files and 2 web manifests; unify or point everything to the canonical ones and remove dead refs.
-4) Produce a **checklist report** and **copy-paste blocks** (Markdown) for each landing page/section.
+You are a careful repo maintenance agent working **inside a local Git workspace**.  
+Primary goals (in this order):
 
-## Scope (keep runtime/cost tight)
-- Only scan and edit these paths:
-  - `landing_pages/`
-  - `website_code_block_ORGANIZED/`
-  - `assets/` (images, css, icons)
-  - `docs/` (only for writing reports to `docs/ai_outputs/`)
-- Ignore: `.git`, `node_modules`, `dist`, `build`, `logs`, `venv`, zips.
+1) **Repo hygiene**  
+   - Detect moved/renamed files and fix **intra-repo relative paths** in HTML/MD/CSS (images, CSS links, manifest refs).  
+   - Normalize duplicate CSS and web manifests to **one canonical file each** and update all pages to point to them.  
+   - Do **not** break existing paths; prefer relative paths; keep URLs lowercase.
 
-## House style (Systeme.io rules of thumb)
-- Snippets must be **self-contained**: inline `<style>` allowed, but prefer linking **one** canonical CSS (relative path).
-- Avoid smart quotes and non-UTF-8 glyphs.
-- Keep `<head>`/`<html>` tags **out** of snippets meant for page sections; include only when producing a full page.
-- Preserve and surface metadata placeholders (e.g., `{{utm}}`, `{{order_bump}}`) — do not remove or expand them.
+2) **Paste-ready snippets for Systeme.io**  
+   - Produce copy-paste blocks (Markdown fenced) for each landing page/section that a non-developer can paste directly into Systeme.io.  
+   - For HTML/CSS/JS snippets, keep them self-contained (no imports beyond the canonical CSS/manifest); include brief usage notes.
 
-## Canonicals (choose or create)
-- Canonical CSS: `assets/css/ngcai.css` (create if missing; migrate rules from duplicates).
-- Canonical Manifest: `assets/site.webmanifest` (migrate icons/shortcuts; update all refs).
-- Canonical Icons: ensure `assets/icons/` contains the icon set the manifest references; fix missing sizes.
+## Scope (keep runtime & cost tight)
+Scan **only**:
+- `docs/`
+- `copywriting/product_pages/`
+- `website_code_block_ORGANIZED/`
 
-## Tasks
-1) **Inventory**
-   - List all HTML/CSS/manifest files under scope.
-   - Identify duplicate CSS/manifest files and which files reference them.
+Consider **only** text files with these extensions:  
+`.md, .txt, .html, .htm, .css, .json`
 
-2) **Unify**
-   - Pick canonical CSS + manifest (as above).
-   - Update all HTML to point to those canonicals with correct **relative** paths.
-   - Remove stale/duplicate refs (only delete files if there is a confirmed 1:1 migration and no remaining refs).
+Skip **everything else** (images, videos, zips, node_modules, .git, build artifacts, PDFs, design binaries).
 
-3) **Fix paths**
-   - For images `<img>`, favicons, and manifest icons: fix broken/absolute paths to correct relative paths.
+## Canonicalization rules
+- **CSS:** pick one canonical CSS (prefer the most recently updated if duplicates conflict).  
+  - Put canonical CSS at: `website_code_block_ORGANIZED/assets/ngcai.css` (create if missing).  
+  - Update all pages to reference `./assets/ngcai.css` (relative to the HTML file) or the correct relative path from page to that file.  
+  - Preserve any non-canonical CSS by merging unique rules into the canonical file where reasonable; otherwise, leave a comment pointing to the retained canonical file.
 
-4) **Validate for Systeme.io**
-   - For each landing page/section, emit:
-     - A “Section” snippet (no `<html>/<head>`, only body block) ready to paste into Systeme’s block.
-     - If a **full page** snippet is required, provide a separate “Full HTML” version with `<html>…</html>`.
-   - Ensure CSS either links to canonical CSS once, or provide a minimal inline `<style>` when truly necessary.
+- **Web manifest:** pick one canonical manifest (most recent).  
+  - Place it at: `website_code_block_ORGANIZED/site.webmanifest` (create if missing).  
+  - Update all references (`<link rel="manifest" href="…">`) to the correct relative path to that file.  
+  - Ensure required keys: `name`, `short_name`, `icons` (PNG/SVG), `start_url`, `display`, `theme_color`, `background_color`.
 
-5) **Outputs**
-   - Write a Markdown report at: `docs/ai_outputs/repo_maintenance_report.md` with:
-     - Summary (files touched, refs updated, deleted duplicates).
-     - Table of each page/section and its snippet locations.
-     - “Next actions” list if any items need manual confirmation.
-   - For each processed page/section, write copy-paste snippets to:
-     - `docs/ai_outputs/snippets/<slug>-section.md`
-     - (optional) `docs/ai_outputs/snippets/<slug>-full.html.md`
+- **Images/assets:** if a file was moved/renamed, adjust **relative** paths in MD/HTML/CSS accordingly.  
+  No remote fetches. No deletions.
 
-## Safety / constraints
-- Never change `.gitignore`, `.editorconfig`, or `.gitattributes`.
-- Do not touch anything outside the scope paths.
-- Prefer edits that **reduce** future maintenance (one CSS, one manifest).
-- If unsure, emit TODOs in the report instead of guessing.
+## Outputs
+- Write paste-ready snippets to:  
+  `docs/ai_outputs/_snippets/`  
+  Use filenames that mirror the source page path (e.g., `product_pages/home-hero.html.out.md`).
 
-## Acceptance check (do this at the end)
-- Run a broken-link pass (relative references only) and include results in the report.
-- Confirm every HTML page/section now references the canonical CSS/manifest.
-- Confirm all updated files are valid UTF-8 and free of smart quotes.
+- If you produce any checklists or “diff summaries”, write to:  
+  `docs/ai_outputs/checklists/`
 
-## Deliverables summary
-- `docs/ai_outputs/repo_maintenance_report.md` (overview + checklist)
-- `docs/ai_outputs/snippets/*` (copy-paste ready blocks)
+- Keep Git safety:
+  - Stage and commit changes with message:  
+    `codex: repo hygiene + canonical CSS/manifest + path fixes`
+  - **Do not** push unless explicitly instructed (we’ll push in a separate step).
 
+## Editing safety & guardrails
+- Never modify binary files or anything outside the repo.  
+- No external network calls.  
+- If uncertain, leave a short `<!-- TODO: ... -->` note rather than guessing.  
+- Prefer minimal, surgical edits. Keep whitespace noise low.  
+- Validate HTML head sections and `<link>` tags when you touch them.
+
+## Systeme.io paste-blocks (format)
+For each landing page / major section you touch, create a short Markdown file in `docs/ai_outputs/_snippets/` containing:
+
+```md
+### {Page or Section Name}
+**Where to paste in Systeme.io:** {e.g., page head / hero block / footer}
+
+```html
+<!-- BEGIN paste-ready -->
+{HTML snippet}
+<!-- END paste-ready -->
+
+## Run now
+Proceed **now** with the defaults above. Do not ask questions.
+- Perform repo hygiene and path normalization.
+- Produce paste-ready snippets into `docs/ai_outputs/_snippets/`.
+- Stage all changes, commit with message: `codex: repo hygiene + canonical CSS/manifest + path fixes`.
+- Push to `origin main` when finished.
+- Print a final summary with counts and the words: **RUN COMPLETE**.
